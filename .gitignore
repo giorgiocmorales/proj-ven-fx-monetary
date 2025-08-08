@@ -2,3 +2,4 @@
 /data/manual_fix/
 /data/output/
 *.Rproj.user
+.Rproj.user
