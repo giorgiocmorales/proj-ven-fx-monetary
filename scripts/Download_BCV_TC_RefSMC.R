@@ -83,11 +83,6 @@ process_bcv_file <- function(url, database_id) {
   return(result)
 }
 
-# Export final tibble
-save_ves_fx_to_csv <- function(df, filename = "data/output/ves_usd_fx_daily.csv") {
-  write_csv(df, filename)
-}
-
 # Main execution block -------------
 
 # URL + ID list
@@ -172,6 +167,9 @@ unique(ves_fx_bcv$database_id) %>% sort()
 
 # Update current (incomplete) quarter -------------
 
+# Load csv
+ves_fx_bcv <- read_csv("data/output/ves_usd_fx_smc.csv")
+
 url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c25_smc.xls"
 database_id <- "2025Q3"
 
@@ -184,5 +182,8 @@ ves_fx_bcv <- ves_fx_bcv %>%
   bind_rows(usd_data) %>% 
   arrange(fecha_valor)
 
-# Save result -------------
+# Save -------------
 write_csv(ves_fx_bcv, "data/output/ves_usd_fx_smc.csv")
+
+# Clean Up -------
+rm(usd_data, ves_fx_bcv, database_id, url, download_bcv_file, extract_usd_from_file, extract_usd_from_sheet, process_bcv_file)
