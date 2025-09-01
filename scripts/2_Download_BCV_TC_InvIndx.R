@@ -33,7 +33,7 @@ scrape_bcv_fx_page <- function(page_number) {
 }
 
 # Identify max number of pages from BCV website (manual) -----------------
-max_page <- 27
+max_page <- 28
 
 # Scrape all pages  -----------
 bcv_scraped_data <- map_dfr(0:max_page, function(i) {
