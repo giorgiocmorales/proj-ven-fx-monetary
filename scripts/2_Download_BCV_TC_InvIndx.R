@@ -37,7 +37,7 @@ max_page <- 28
 
 # Scrape all pages  -----------
 bcv_scraped_data <- map_dfr(0:max_page, function(i) {
-  message(glue("→ Scraping page {i + 1} of {max_page + 1}"))
+  message(glue("Scraping page {i + 1} of {max_page + 1}"))
   scrape_bcv_fx_page(i)
 })
 
@@ -49,5 +49,5 @@ bcv_scraped_data <- bcv_scraped_data %>%
 # Save -------------
 write_csv(bcv_scraped_data, "data/output/ves_usd_fx_indx.csv")
 
-# clean Up -------
+# clean Up ------- 
 rm(bcv_scraped_data, max_page, scrape_bcv_fx_page)

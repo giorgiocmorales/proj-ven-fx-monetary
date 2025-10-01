@@ -8,6 +8,10 @@ library(lubridate)
 library(scales)
 library(extrafont)
 library(slider)
+library(egg)
+library(grid)
+library(ragg)
+
 
 # Load data ------
 
@@ -27,21 +31,38 @@ fx_consolidated <- read_csv("data/output/ves_usd_fx_consolidated.csv",
 loadfonts(device = "win")
 
 theme_set(
-  theme_minimal(base_size = 12, base_family = "Georgia") +
+  theme_minimal(base_size = 14, base_family = "Georgia") +
     theme(
-      legend.position = "bottom",
-      legend.title = element_blank(),
-      axis.line = element_line(color = "black"),
-      axis.text = element_text(color = "grey20"),
-      plot.title = element_text(size = 14, face = "bold"),
+      axis.text        = element_text(color = "grey20"),
+      axis.title       = element_text(color = "grey30"),
+      plot.title       = element_text(size = 16, face = "bold", hjust = 0),
+      plot.subtitle    = element_text(size = 12, hjust = 0,margin = margin(b = 10)), # always reserve space
+      plot.caption     = element_text(size = 9, hjust = 0, margin = margin(t = 4)),
+      axis.line        = element_blank(),
+      axis.ticks       = element_blank(),
       panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey70", linetype = "dashed", linewidth = 0.15),
-      panel.grid.minor = element_blank(),
-      plot.caption = element_text(hjust = 0, size = 9, margin = margin(t = 2)),
-      plot.margin = margin(10, 10, 10, 10)
+      panel.grid.minor   = element_blank(),
+      panel.grid.major.y = element_line(color = "grey80", linetype = "dashed", linewidth = 0.3),
+      panel.border     = element_rect(color = "black", fill = NA, linewidth = 0.6), # ← inner box
+      legend.position  = "bottom",
+      legend.title     = element_blank(),
+      plot.margin      = margin(10, 10, 10, 10),  # room for end labels on right
+      
+      # reserve right axis slot (hidden by default)
+      axis.text.y.right  = element_text(colour = scales::alpha("black", 0)),
+      axis.ticks.y.right = element_line(colour = scales::alpha("black", 0)),
+      axis.title.y.right = element_text(colour = scales::alpha("black", 0))
     )
 )
 
+# Lock panels -------
+
+# Export constants
+FIG_W_IN  <- 8
+FIG_H_IN  <- 6
+FIG_DPI   <- 300
+PANEL_W_IN <- 6.5
+PANEL_H_IN <- PANEL_W_IN/1.56
 
 # Last date ----------
 
@@ -60,24 +81,39 @@ fx_1 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(NA, 250),
-    expand = c(0,0)) +
+    limits = c(NA, 300),
+    breaks = seq(0, 300, 25),
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name   = waiver(),
+      labels = scales::label_number(big.mark=".", decimal.mark=","))) +
   scale_x_date(
     limits = c(ymd("2022-01-01"), NA)) +
   labs(
-    title = "Tipos de cambio",
+    title = "Tipos de cambio en Venezuela",
+    subtitle = "\u00A0",
     caption = paste0("Fuente: BCV; Yadio; Cálculos propios.| Actualizado: ", last_date_label),
     y = "VES/USD") +
   theme(
     axis.title.x = element_blank())
 
-ggsave(filename = "output/fx_1.jpeg",
-       plot = fx_1,
-       width = 8*300,
-       height = 6*300,
-       units = "px",
-       dpi = 300)
+print(fx_1)
 
+fx_1 <- fx_1 + coord_cartesian(clip = "off")
+
+ggsave(
+  "output/fx_1.jpeg",
+  plot   = egg::set_panel_size(
+    fx_1,
+    width  = grid::unit(PANEL_W_IN, "in"),
+    height = grid::unit(PANEL_H_IN, "in")
+  ),
+  width  = FIG_W_IN,
+  height = FIG_H_IN,
+  units  = "in",
+  dpi    = FIG_DPI,
+  device = ragg::agg_jpeg
+)
 # 2 FX time series with gap -------
 
 ## Last vals, gap and labels
@@ -98,9 +134,12 @@ fx_2 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(25, 250),
+    limits = c(25, 300),
     breaks = scales::breaks_width(25),
-    expand = c(0,0)) +
+    expand = c(0,0),
+    sec.axis = dup_axis(
+      name   = waiver(),
+      labels = scales::label_number(big.mark=".", decimal.mark=","))) +
   scale_x_date(
     limits = c(ymd("2024-01-01"), last_date + 15),
     breaks = seq(ymd("2024-01-01"), last_date + 15, by = "2 months"),
@@ -130,17 +169,29 @@ fx_2 <-
     arrow = arrow(ends = "both", type = "closed", length = unit(0.025, "inches"))) +
   labs(
     title = "Tipos de cambio",
+    subtitle = "\u00A0",
     caption = paste0("Fuente: BCV; Yadio; Cálculos propios.| Actualizado: ", last_date_label),
     y = "VES/USD") +
   theme(
     axis.title.x = element_blank())
 
-ggsave(filename = "output/fx_2.jpeg",
-       plot = fx_2,
-       width = 8*300,
-       height = 6*300,
-       units = "px",
-       dpi = 300)
+print(fx_2)
+
+fx_2 <- fx_2 + coord_cartesian(clip = "off")
+
+ggsave(
+  "output/fx_2.jpeg",
+  plot   = egg::set_panel_size(
+    fx_2,
+    width  = grid::unit(PANEL_W_IN, "in"),
+    height = grid::unit(PANEL_H_IN, "in")
+  ),
+  width  = FIG_W_IN,
+  height = FIG_H_IN,
+  units  = "in",
+  dpi    = FIG_DPI,
+  device = ragg::agg_jpeg
+)
 
 # 3 FX gap -----
 
@@ -175,5 +226,7 @@ ggsave(filename = "output/fx_3.jpeg",
        height = 6*300,
        units = "px",
        dpi = 300)
+
+print(fx_3)
 
 # 4 Distance to rolling average -----

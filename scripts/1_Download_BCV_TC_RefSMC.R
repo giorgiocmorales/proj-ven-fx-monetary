@@ -59,7 +59,7 @@ process_bcv_file <- function(url, database_id) {
       download_bcv_file(url)
     },
     error = function(e) {
-      message(glue("❌ Download failed: {basename(url)} — skipping"))
+      message(glue("Download failed: {basename(url)} — skipping"))
       return(NULL)
     }
   )
@@ -69,7 +69,7 @@ process_bcv_file <- function(url, database_id) {
   result <- tryCatch(
     extract_usd_from_file(file_path),
     error = function(e) {
-      message(glue("⚠️ XLS parse failed: {basename(file_path)} — check manually"))
+      message(glue("XLS parse failed: {basename(file_path)} — check manually"))
       file.copy(file_path, file.path("data/manual_fix", basename(file_path)), overwrite = TRUE)
       return(NULL)
     }
