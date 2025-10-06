@@ -15,7 +15,7 @@ library(ragg)
 
 # Load data ------
 
-fx_consolidated <- read_csv("data/output/ves_usd_fx_consolidated.csv",
+fx_consolidated <- read_csv("data/consolidated/ves_usd_fx_consolidated.csv",
                         col_types = cols(
                           date = col_date(),
                           rate_smc = col_double(),
@@ -102,7 +102,7 @@ print(fx_1)
 fx_1 <- fx_1 + coord_cartesian(clip = "off")
 
 ggsave(
-  "output/fx_1.jpeg",
+  "outputs/figures/fx_1.jpeg",
   plot   = egg::set_panel_size(
     fx_1,
     width  = grid::unit(PANEL_W_IN, "in"),
@@ -180,7 +180,7 @@ print(fx_2)
 fx_2 <- fx_2 + coord_cartesian(clip = "off")
 
 ggsave(
-  "output/fx_2.jpeg",
+  "outputs/figures/fx_2.jpeg",
   plot   = egg::set_panel_size(
     fx_2,
     width  = grid::unit(PANEL_W_IN, "in"),
@@ -220,7 +220,7 @@ fx_3 <-
   theme(
     axis.title.x = element_blank())
 
-ggsave(filename = "output/fx_3.jpeg",
+ggsave(filename = "outputs/figures/fx_3.jpeg",
        plot = fx_3,
        width = 8*300,
        height = 6*300,

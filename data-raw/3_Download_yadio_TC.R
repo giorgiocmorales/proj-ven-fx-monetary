@@ -25,7 +25,7 @@ ves_hist_clean <- data_list %>%
   arrange(date)
 
 # Save ------
-write_csv(ves_hist_clean, "data/output/ves_usd_fx_yad.csv")
+write_csv(ves_hist_clean, "data/cleaned/ves_usd_fx_yad.csv")
 
 #Clean up -----
 rm(data_list, resp, ves_hist_clean, raw_text, url_hist)

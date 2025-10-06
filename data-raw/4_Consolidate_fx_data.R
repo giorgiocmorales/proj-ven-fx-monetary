@@ -5,7 +5,7 @@ library(tidyverse)
 library(lubridate)
 
 # Load data ----------
-bcv_fx_smc <- read_csv("data/output/ves_usd_fx_smc.csv",
+bcv_fx_smc <- read_csv("data/cleaned/ves_usd_fx_smc.csv",
                        col_types = cols(
                          fecha_valor = col_date(),
                          usd_bid = col_double(),
@@ -13,13 +13,13 @@ bcv_fx_smc <- read_csv("data/output/ves_usd_fx_smc.csv",
                          database_id = col_character()
                          ))
 
-bcv_fx_indx <- read_csv("data/output/ves_usd_fx_indx.csv",
+bcv_fx_indx <- read_csv("data/cleaned/ves_usd_fx_indx.csv",
                         col_types = cols(
                           fecha = col_date(),
                           tasa = col_double()
                         ))
 
-ves_fx_yad <- read_csv("data/output/ves_usd_fx_yad.csv",
+ves_fx_yad <- read_csv("data/cleaned/ves_usd_fx_yad.csv",
                        col_types = cols(
                          date = col_date(),
                          rate = col_double(),
@@ -66,7 +66,7 @@ fx_combined <- fx_combined %>%
   select(date, rate_smc, rate_smc_adj, rate_indx, rate_indx_adj, rate_yad)
 
 # Save ----------------
-write_csv(fx_combined, "data/output/ves_usd_fx_consolidated.csv")
+write_csv(fx_combined, "data/consolidated/ves_usd_fx_consolidated.csv")
 
 # Clean up
 rm(bcv_fx_indx, bcv_fx_smc, ves_fx_yad, full_date_range, fx_combined)

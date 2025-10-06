@@ -47,7 +47,7 @@ bcv_scraped_data <- bcv_scraped_data %>%
   arrange(fecha)                         # Sort chronologically
 
 # Save -------------
-write_csv(bcv_scraped_data, "data/output/ves_usd_fx_indx.csv")
+write_csv(bcv_scraped_data, "data/cleaned/ves_usd_fx_indx.csv")
 
 # clean Up ------- 
 rm(bcv_scraped_data, max_page, scrape_bcv_fx_page)

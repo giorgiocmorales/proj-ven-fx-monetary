@@ -168,7 +168,7 @@ unique(ves_fx_bcv$database_id) %>% sort()
 # Update current (incomplete) quarter -------------
 
 # Load csv
-ves_fx_bcv <- read_csv("data/output/ves_usd_fx_smc.csv")
+ves_fx_bcv <- read_csv("data/cleaned/ves_usd_fx_smc.csv")
 
 url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c25_smc.xls"
 database_id <- "2025Q3"
@@ -183,7 +183,7 @@ ves_fx_bcv <- ves_fx_bcv %>%
   arrange(fecha_valor)
 
 # Save -------------
-write_csv(ves_fx_bcv, "data/output/ves_usd_fx_smc.csv")
+write_csv(ves_fx_bcv, "data/cleaned/ves_usd_fx_smc.csv")
 
 # Clean Up -------
 rm(usd_data, ves_fx_bcv, database_id, url, download_bcv_file, extract_usd_from_file, extract_usd_from_sheet, process_bcv_file)
