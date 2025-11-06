@@ -134,7 +134,7 @@ fx_2 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(25, 300),
+    limits = c(25, 350),
     breaks = scales::breaks_width(25),
     expand = c(0,0),
     sec.axis = dup_axis(
@@ -220,13 +220,13 @@ fx_3 <-
   theme(
     axis.title.x = element_blank())
 
+print(fx_3)
+
 ggsave(filename = "outputs/figures/fx_3.jpeg",
        plot = fx_3,
        width = 8*300,
        height = 6*300,
        units = "px",
        dpi = 300)
-
-print(fx_3)
 
 # 4 Distance to rolling average -----

@@ -66,7 +66,7 @@ fx_combined <- fx_combined %>%
   select(date, rate_smc, rate_smc_adj, rate_indx, rate_indx_adj, rate_yad)
 
 # Save ----------------
-write_csv(fx_combined, "data/consolidated/ves_usd_fx_consolidated.csv")
+write_csv(fx_combined, "data/output/ves_usd_fx_consolidated.csv")
 
 # Clean up
 rm(bcv_fx_indx, bcv_fx_smc, ves_fx_yad, full_date_range, fx_combined)
