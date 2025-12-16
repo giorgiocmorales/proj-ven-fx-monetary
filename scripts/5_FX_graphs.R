@@ -15,7 +15,7 @@ library(ragg)
 
 # Load data ------
 
-fx_consolidated <- read_csv("data/consolidated/ves_usd_fx_consolidated.csv",
+fx_consolidated <- read_csv("data/output/ves_usd_fx_consolidated.csv",
                         col_types = cols(
                           date = col_date(),
                           rate_smc = col_double(),
@@ -81,8 +81,8 @@ fx_1 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(NA, 300),
-    breaks = seq(0, 300, 25),
+    limits = c(NA, 400),
+    breaks = seq(0, 400, 50),
     expand = c(0,0),
     sec.axis = dup_axis(
       name   = waiver(),
@@ -134,8 +134,8 @@ fx_2 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(25, 350),
-    breaks = scales::breaks_width(25),
+    limits = c(0, 450),
+    breaks = scales::breaks_width(50),
     expand = c(0,0),
     sec.axis = dup_axis(
       name   = waiver(),
