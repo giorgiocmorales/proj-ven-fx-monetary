@@ -24,7 +24,8 @@ fx_consolidated <- read_csv("data/output/ves_usd_fx_consolidated.csv",
                           rate_indx_adj = col_double(),
                           rate_yad = col_double())) %>%
   select(date, rate_smc_adj, rate_indx_adj, rate_yad) %>%
-  filter(date <= Sys.Date())
+  filter(date <= Sys.Date()) %>%
+  mutate(gap = (rate_yad/rate_smc_adj - 1)*100)
 
 # Theme set -----
 
@@ -81,8 +82,8 @@ fx_1 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(NA, 400),
-    breaks = seq(0, 400, 50),
+    limits = c(NA, 900),
+    breaks = seq(0, 900, 50),
     expand = c(0,0),
     sec.axis = dup_axis(
       name   = waiver(),
@@ -134,37 +135,37 @@ fx_2 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(0, 450),
+    limits = c(0, 900),
     breaks = scales::breaks_width(50),
     expand = c(0,0),
     sec.axis = dup_axis(
       name   = waiver(),
       labels = scales::label_number(big.mark=".", decimal.mark=","))) +
   scale_x_date(
-    limits = c(ymd("2024-01-01"), last_date + 15),
-    breaks = seq(ymd("2024-01-01"), last_date + 15, by = "2 months"),
+    limits = c(ymd("2024-01-01"), last_date + 20),
+    breaks = seq(ymd("2024-01-01"), last_date + 20, by = "3 months"),
     date_labels = "%b-%y") +
   # Last values and gap
   geom_text(
     data = last_vals,
-    aes(x = date + 5, y = (rate_smc_adj + rate_yad)/2, 
+    aes(x = date + 7, y = (rate_smc_adj + rate_yad)/2, 
         label = percent(gap_pct, accuracy = 0.1, decimal.mark = ",")),
-    inherit.aes = FALSE, hjust = 0, size = 3.5, family = "Georgia") +
+    inherit.aes = FALSE, hjust = 0, size = 3, family = "Georgia") +
   geom_text(
     data = last_vals,
-    aes(x = date + 5, y = rate_smc_adj,
+    aes(x = date + 7, y = rate_smc_adj,
         label = number(rate_smc_adj, big.mark=".", decimal.mark=",", accuracy=0.1)),
-    color = "#003A5D", inherit.aes = FALSE, hjust = 0, size = 3.5, family = "Georgia") +
+    color = "#003A5D", inherit.aes = FALSE, hjust = 0, size = 3, family = "Georgia") +
   geom_text(
     data = last_vals,
-    aes(x = date + 5, y = rate_yad,
+    aes(x = date + 7, y = rate_yad,
         label = number(rate_yad, big.mark=".", decimal.mark=",", accuracy=0.1)),
-    color = "#D70036", inherit.aes = FALSE, hjust = 0, size = 3.5, family = "Georgia") +
+    color = "#D70036", inherit.aes = FALSE, hjust = 0, size = 3, family = "Georgia") +
   #Segment
   geom_segment(
     data = last_vals,
     aes(x = date, xend = date,
-        y = rate_smc_adj + 5, yend = rate_yad - 5),
+        y = rate_smc_adj + 7, yend = rate_yad - 5),
     color = "black", linewidth = 0.5,
     arrow = arrow(ends = "both", type = "closed", length = unit(0.025, "inches"))) +
   labs(
@@ -205,12 +206,12 @@ fx_3 <-
       "Brecha" = "#003A5D")) +
   scale_y_continuous(
     labels = scales::label_percent(accuracy = 0.1, decimal.mark = ","),
-    limits = c(0, 0.7),
-    breaks = seq(0, 0.7, by = 0.1),
+    limits = c(0, 1.8),
+    breaks = seq(0, 1.8, by = 0.1),
     expand = c(0,0)) +
   scale_x_date(
       limits = c(ymd("2024-01-01"), last_date + 15),
-      breaks = seq(ymd("2024-01-01"), last_date + 15, by = "2 months"),
+      breaks = seq(ymd("2024-01-01"), last_date + 15, by = "3 months"),
       date_labels = "%b-%y") +
   labs(
     title = "Brecha cambiaria",
@@ -230,3 +231,4 @@ ggsave(filename = "outputs/figures/fx_3.jpeg",
        dpi = 300)
 
 # 4 Distance to rolling average -----
+

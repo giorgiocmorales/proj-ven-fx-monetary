@@ -111,7 +111,8 @@ bcv_files <- tribble(
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a25_smc.xls", "2025Q1",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b25_smc.xls", "2025Q2",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c25_smc.xls", "2025Q3",
-  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2d25_smc.xls", "2025Q4"
+  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2d25_smc.xls", "2025Q4",
+  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls", "2026Q1"
 )
 
 # Initialize result
@@ -171,8 +172,8 @@ unique(ves_fx_bcv$database_id) %>% sort()
 # Load csv
 ves_fx_bcv <- read_csv("data/cleaned/ves_usd_fx_smc.csv")
 
-url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2d25_smc.xls"
-database_id <- "2025Q5"
+url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls"
+database_id <- "2026Q1"
 
 # Process fresh data
 usd_data <- process_bcv_file(url, database_id)
