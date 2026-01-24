@@ -167,6 +167,9 @@ ves_fx_bcv <- ves_fx_bcv %>% arrange(fecha_valor)
 # Check databases order
 unique(ves_fx_bcv$database_id) %>% sort()
 
+# Save file
+write_csv(ves_fx_bcv, "data/cleaned/ves_usd_fx_smc.csv")
+
 # Update current (incomplete) quarter -------------
 
 # Load csv

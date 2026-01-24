@@ -135,7 +135,7 @@ fx_2 <-
     values = c("TC oficial" = "#003A5D","TC no-oficial" = "#D70036")) +
   scale_y_continuous(
     labels = scales::label_number(big.mark = ".", decimal.mark = ","),
-    limits = c(0, 900),
+    limits = c(0, 800),
     breaks = scales::breaks_width(50),
     expand = c(0,0),
     sec.axis = dup_axis(
