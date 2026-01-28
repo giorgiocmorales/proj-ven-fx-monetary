@@ -7,6 +7,9 @@ library(lubridate)
 library(openxlsx)
 library(glue)
 
+# Clean up ----
+rm(list = ls())
+
 # Helper functions ------
 
 # Download to data/raw/
@@ -186,6 +189,9 @@ ves_fx_bcv <- ves_fx_bcv %>%
   filter(database_id != !!database_id) %>%
   bind_rows(usd_data) %>% 
   arrange(fecha_valor)
+
+# Check no repeats -----------
+length(unique(ves_fx_bcv$fecha_valor)) == length(ves_fx_bcv$fecha_valor)
 
 # Save -------------
 write_csv(ves_fx_bcv, "data/cleaned/ves_usd_fx_smc.csv")

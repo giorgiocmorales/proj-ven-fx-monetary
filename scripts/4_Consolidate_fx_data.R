@@ -4,6 +4,9 @@
 library(tidyverse)
 library(lubridate)
 
+# Clean up
+rm(list = ls())
+
 # Load data ----------
 bcv_fx_smc <- read_csv("data/cleaned/ves_usd_fx_smc.csv",
                        col_types = cols(
