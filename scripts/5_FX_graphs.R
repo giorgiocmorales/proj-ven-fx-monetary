@@ -208,8 +208,8 @@ fx_3 <-
       "Brecha" = "#003A5D")) +
   scale_y_continuous(
     labels = scales::label_percent(accuracy = 0.1, decimal.mark = ","),
-    limits = c(0, 1.8),
-    breaks = seq(0, 1.8, by = 0.1),
+    limits = c(0, 1.5),
+    breaks = seq(0, 1.5, by = 0.1),
     expand = c(0,0)) +
   scale_x_date(
       limits = c(ymd("2024-01-01"), last_date + 15),
