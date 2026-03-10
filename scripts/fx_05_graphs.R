@@ -17,7 +17,7 @@ library(ragg)
 
 # Load data ------
 
-fx_consolidated <- read_csv("data/output/ves_usd_fx_consolidated.csv",
+fx_consolidated <- read_csv("data/final/ves_usd_fx_consolidated.csv",
                         col_types = cols(
                           date = col_date(),
                           rate_smc = col_double(),
