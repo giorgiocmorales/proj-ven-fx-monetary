@@ -1,0 +1,12 @@
+source("R/source_helpers.R")
+
+run_script_isolated("scripts/external_01_fx_smc_bcv.R")
+run_script_isolated("scripts/external_02_fx_ind_bcv.R")
+run_script_isolated("scripts/external_03_fx_int_bcv.R")
+run_script_isolated("scripts/external_04_fx_yadio.R")
+run_script_isolated("scripts/external_95_fx_combine.R")
+run_script_isolated("scripts/external_05_bop_a_bcv.R")
+run_script_isolated("scripts/external_06_bop_q_bcv.R")
+run_script_isolated("scripts/external_07_res_bcv.R")
+run_script_isolated("scripts/external_08_res_imf.R")
+run_script_isolated("scripts/external_09_res_wb.R")

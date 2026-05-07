@@ -7,6 +7,9 @@ library(lubridate)
 library(purrr)
 library(glue)
 
+source("R/source_helpers.R")
+ensure_project_dirs()
+
 #Functions ----------------
 
 # Scrapes a single page from BCV's investment index site ---------------
@@ -47,7 +50,7 @@ bcv_scraped_data <- bcv_scraped_data %>%
   arrange(fecha)                         # Sort chronologically
 
 # Save -------------
-write_csv(bcv_scraped_data, "data/interim/ves_usd_fx_indx.csv")
+write_csv(bcv_scraped_data, "data/processed/external_02_fx_ind_bcv.csv")
 
 # clean Up ------- 
 rm(bcv_scraped_data, max_page, scrape_bcv_fx_page)

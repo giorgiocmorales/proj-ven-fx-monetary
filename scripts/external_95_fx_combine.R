@@ -4,25 +4,61 @@
 library(tidyverse)
 library(lubridate)
 
+source("R/source_helpers.R")
+ensure_project_dirs()
+
 # Clean up
 rm(list = ls())
 
+resolve_input_path <- function(primary_path, legacy_paths = character()) {
+  candidates <- c(primary_path, legacy_paths)
+  match <- candidates[file.exists(candidates)][1]
+
+  if (is.na(match)) {
+    stop(sprintf("Missing required input file: %s", primary_path))
+  }
+
+  match
+}
+
+add_missing_columns <- function(df, columns) {
+  for (column in columns) {
+    if (!column %in% names(df)) {
+      df[[column]] <- NA
+    }
+  }
+
+  df
+}
+
 # Load data ----------
-bcv_fx_smc <- read_csv("data/interim/ves_usd_fx_smc.csv",
+bcv_fx_smc <- read_csv(resolve_input_path(
+  "data/processed/external_01_fx_smc_bcv.csv",
+  c("data/processed/external_01_bcv_fx_smc.csv", "data/processed/fx_01_bcv_smc.csv")
+),
                        col_types = cols(
                          fecha_valor = col_date(),
+                         currency = col_character(),
+                         bid = col_double(),
+                         ask = col_double(),
                          usd_bid = col_double(),
                          usd_ask = col_double(),
                          database_id = col_character()
                          ))
 
-bcv_fx_indx <- read_csv("data/interim/ves_usd_fx_indx.csv",
+bcv_fx_indx <- read_csv(resolve_input_path(
+  "data/processed/external_02_fx_ind_bcv.csv",
+  c("data/processed/external_02_bcv_fx_indx.csv", "data/processed/fx_02_bcv_indx.csv")
+),
                         col_types = cols(
                           fecha = col_date(),
                           tasa = col_double()
                         ))
 
-ves_fx_yad <- read_csv("data/interim/ves_usd_fx_yad.csv",
+ves_fx_yad <- read_csv(resolve_input_path(
+  "data/processed/external_04_fx_yadio.csv",
+  c("data/processed/external_03_fx_yadio.csv", "data/processed/external_03_yadio_fx.csv", "data/processed/fx_03_yadio.csv")
+),
                        col_types = cols(
                          date = col_date(),
                          rate = col_double(),
@@ -33,7 +69,13 @@ ves_fx_yad <- read_csv("data/interim/ves_usd_fx_yad.csv",
 
 # Clean data ------------
 bcv_fx_smc <- bcv_fx_smc %>%
-  rename(date = fecha_valor, rate_smc = usd_ask) %>%
+  add_missing_columns(c("currency", "ask", "usd_ask")) %>%
+  mutate(
+    currency = coalesce(currency, "USD"),
+    rate_smc = coalesce(ask, usd_ask)
+  ) %>%
+  filter(currency == "USD") %>%
+  rename(date = fecha_valor) %>%
   select(date, rate_smc)
 
 bcv_fx_indx <- bcv_fx_indx %>%
@@ -69,8 +111,24 @@ fx_combined <- fx_combined %>%
   select(date, rate_smc, rate_smc_adj, rate_indx, rate_indx_adj, rate_yad)
 
 # Save ----------------
-write_csv(fx_combined, "data/final/ves_usd_fx_consolidated.csv")
+output_path <- "data/final/external_fx.csv"
+
+tryCatch(
+  write_csv(fx_combined, output_path),
+  error = function(e) {
+    fallback_path <- "data/final/external_fx_rebuild.csv"
+    warning(sprintf(
+      "Could not overwrite %s. Wrote rebuild output to %s instead.",
+      output_path,
+      fallback_path
+    ))
+    write_csv(fx_combined, fallback_path)
+  }
+)
 
 # Clean up
-rm(bcv_fx_indx, bcv_fx_smc, ves_fx_yad, full_date_range, fx_combined)
+rm(
+  bcv_fx_indx, bcv_fx_smc, ves_fx_yad, full_date_range, fx_combined,
+  output_path, resolve_input_path, add_missing_columns
+)
 

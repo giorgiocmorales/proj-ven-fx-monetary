@@ -1,0 +1,24 @@
+flow_id,flow_name,dsd_ref,dimension_order,concept_ref,matched_codelist_id,matched_codelist_name,matched_code_count,match_score,indicator_candidate
+WEO,World Economic Outlook (WEO),DSD_WEO,1,COUNTRY,CL_WEO_COUNTRY,World Economic Outlook (WEO) Country,338,10,FALSE
+WEO,World Economic Outlook (WEO),DSD_WEO,2,INDICATOR,CL_WEO_INDICATOR,World Economic Outlook (WEO) Indicator,145,10,TRUE
+WEO,World Economic Outlook (WEO),DSD_WEO,3,FREQ,CL_FREQ,Frequency,34,6,FALSE
+CPI,Consumer Price Index (CPI),DSD_CPI,1,COUNTRY,CL_COUNTRY,Country,337,6,FALSE
+CPI,Consumer Price Index (CPI),DSD_CPI,2,INDEX_TYPE,CL_INDEX_TYPE,Index type,49,4,TRUE
+CPI,Consumer Price Index (CPI),DSD_CPI,3,COICOP_1999,CL_COICOP_1999,COICOP 1999,15,4,TRUE
+CPI,Consumer Price Index (CPI),DSD_CPI,4,TYPE_OF_TRANSFORMATION,CL_CPI_TYPE_OF_TRANSFORMATION,Consumer Price Index (CPI) Type of Transformation,8,8,TRUE
+CPI,Consumer Price Index (CPI),DSD_CPI,5,FREQ,CL_FREQ,Frequency,34,6,FALSE
+ER,Exchange Rates (ER),DSD_ER_PUB,1,COUNTRY,CL_ER_COUNTRY_PUB,"Exchange Rate (ER) Country, Publication",342,10,FALSE
+ER,Exchange Rates (ER),DSD_ER_PUB,2,INDICATOR,CL_ER_INDICATOR_PUB,Exchange Rates (ER) Indicator,10,10,TRUE
+ER,Exchange Rates (ER),DSD_ER_PUB,3,TYPE_OF_TRANSFORMATION,CL_ER_TYPE_OF_TRANSFORMATION,Exchange Rates (ER) Type of Transformation,2,8,TRUE
+ER,Exchange Rates (ER),DSD_ER_PUB,4,FREQ,CL_FREQ,Frequency,34,6,FALSE
+MFS_IR,"Monetary and Financial Statistics (MFS), Interest Rate",DSD_MFS_IR,1,COUNTRY,CL_COUNTRY,Country,337,6,FALSE
+MFS_IR,"Monetary and Financial Statistics (MFS), Interest Rate",DSD_MFS_IR,2,IR_INDICATOR,CL_MFS_IR_INDICATOR,Monetary and Financial Statistics (MFS_IR) Indicator,72,8,TRUE
+MFS_IR,"Monetary and Financial Statistics (MFS), Interest Rate",DSD_MFS_IR,3,FREQ,CL_FREQ,Frequency,34,6,FALSE
+IMTS,International Trade in Goods (by partner country) (IMTS),DSD_IMTS,1,COUNTRY,CL_IMTS_COUNTRY,International Trade in Goods (by partner country) (IMTS) Country,353,10,FALSE
+IMTS,International Trade in Goods (by partner country) (IMTS),DSD_IMTS,2,INDICATOR,CL_IMTS_INDICATOR,International Trade in Goods (by partner country) (IMTS) Indicator,4,10,TRUE
+IMTS,International Trade in Goods (by partner country) (IMTS),DSD_IMTS,3,COUNTERPART_COUNTRY,CL_IMTS_COUNTRY,International Trade in Goods (by partner country) (IMTS) Country,353,4,TRUE
+IMTS,International Trade in Goods (by partner country) (IMTS),DSD_IMTS,4,FREQ,CL_FREQ,Frequency,34,6,FALSE
+IRFCL,International Reserves and Foreign Currency Liquidity (IRFCL),DSD_IRFCL_PUB,1,COUNTRY,CL_IRFCL_COUNTRY_PUB,International Reserves and Foreign Currency Liquidity (IRFCL) Country,1576,10,FALSE
+IRFCL,International Reserves and Foreign Currency Liquidity (IRFCL),DSD_IRFCL_PUB,2,INDICATOR,CL_IRFCL_INDICATOR_PUB,International Reserves and Foreign Currency Liquidity (IRFCL) Indicator,814,10,TRUE
+IRFCL,International Reserves and Foreign Currency Liquidity (IRFCL),DSD_IRFCL_PUB,3,SECTOR,CL_SECTOR,Institutional Sector,288,6,FALSE
+IRFCL,International Reserves and Foreign Currency Liquidity (IRFCL),DSD_IRFCL_PUB,4,FREQ,CL_FREQ,Frequency,34,6,FALSE

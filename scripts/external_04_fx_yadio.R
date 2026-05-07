@@ -6,6 +6,9 @@ library(jsonlite)
 library(tidyverse)
 library(lubridate)
 
+source("R/source_helpers.R")
+ensure_project_dirs()
+
 # Fetch url ------
 url_hist <- "https://web2.xekura.io/json/VES/hist.json"
 resp <- GET(url_hist)
@@ -25,7 +28,7 @@ ves_hist_clean <- data_list %>%
   arrange(date)
 
 # Save ------
-write_csv(ves_hist_clean, "data/interim/ves_usd_fx_yad.csv")
+write_csv(ves_hist_clean, "data/processed/external_04_fx_yadio.csv")
 
 #Clean up -----
 rm(data_list, resp, ves_hist_clean, raw_text, url_hist)

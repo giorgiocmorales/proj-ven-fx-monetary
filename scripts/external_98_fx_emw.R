@@ -6,7 +6,6 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(scales)
-library(extrafont)
 library(slider)
 library(egg)
 library(grid)
@@ -15,12 +14,16 @@ library(ragg)
 # Clean up --------
 rm(list = ls())
 
+source("R/source_helpers.R")
+source("R/chart_theme.R")
+ensure_project_dirs()
+
 # Set time
 Sys.setlocale("LC_TIME", "English")
 
 # Load data ------
 
-fx_consolidated <- read_csv("data/final/ves_usd_fx_consolidated.csv",
+fx_consolidated <- read_csv("data/final/external_fx.csv",
                             col_types = cols(
                               date = col_date(),
                               rate_smc = col_double(),
@@ -42,36 +45,16 @@ capture_date <- as.Date("03-01-2026", format = "%d-%m-%Y")
 fx_plot <- fx_consolidated %>%
   filter(date >= start_date, date <= Sys.Date())
 
-# EMW-like theme
-theme_emw <- function(base_family = "Arial", base_size = 8) {
-  theme_minimal(base_size = base_size, base_family = base_family) +
+# EMW-specific charts use the same locked canvas/panel helpers, with smaller text.
+theme_emw <- function(base_family = ven_chart_specs$base_family, base_size = 8) {
+  ven_theme(base_family = base_family, base_size = base_size) +
     theme(
-      plot.title.position   = "plot",
-      
-      plot.title    = element_text(size = base_size + 2, hjust = 0, margin = margin(b = 6)),
-      plot.subtitle = element_text(size = base_size, hjust = 0, margin = margin(b = 10)),
-      plot.tag      = element_text(size = base_size + 2, color = scales::alpha("grey40", 0.6)),
-      
       axis.title = element_blank(),
-      axis.text  = element_text(size = base_size - 1, color = "grey20"),
-      
+      panel.border = element_blank(),
       axis.line.x = element_line(color = "grey30", linewidth = 0.5),
       axis.line.y = element_line(color = "grey30", linewidth = 0.5),
-      
       axis.ticks = element_line(color = "grey30", linewidth = 0.5),
-      axis.ticks.length = unit(-2.5, "pt"),
-      
-      panel.grid.minor   = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(color = "grey85", linewidth = 0.4),
-      
-      panel.border = element_blank(),
-      
-      legend.position = "bottom",
-      legend.title    = element_blank(),
-      legend.text     = element_text(size = base_size - 1),
-      
-      plot.margin = margin(8, 4, 8, 10)
+      axis.ticks.length = unit(-2.5, "pt")
     )
 }
 
@@ -161,7 +144,5 @@ p1
 
 # Export
 
-ragg::agg_png("outputs/figures/p1_emw.png", width = 1980, height = 1250, res = 300)
-print(p1)
-dev.off()
+ven_save_plot("outputs/figures/p1_emw.png", p1, device = ragg::agg_png)
 

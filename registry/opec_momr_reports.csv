@@ -1,0 +1,13 @@
+report_month,observation_month,appendix_url,pdf_url,pdf_source,page_price,page_production,status,notes
+2026-04-01,2026-03-01,https://www.opec.org/assets/assetdb/momr-appendix-april-2026.xlsx,https://mundopetroleo.com/resources/news/27568/1776110465.pdf,mirror,12,61,active,Official appendix asset available; PDF mirror used because OPEC report body blocks local clients
+2026-03-01,2026-02-01,https://www.opec.org/assets/assetdb/momr-appendix-march-2026.xlsx,https://www.opec.org/assets/assetdb/momr-march-2026.pdf,official,12,63,active,Official PDF and appendix
+2026-02-01,2026-01-01,https://www.opec.org/assets/assetdb/momr-appendix-february-2026.xlsx,https://www.opec.org/assets/assetdb/momr-february-2026.pdf,official,12,63,active,Official PDF and appendix
+2026-01-01,2025-12-01,https://www.opec.org/assets/assetdb/momr-appendix-january-2026.xlsx,https://www.opec.org/assets/assetdb/momr-january-2026.pdf,official,12,61,active,Official PDF and appendix
+2025-12-01,2025-11-01,https://www.opec.org/assets/assetdb/momr-appendix-dec-2025.xlsx,https://www.opec.org/assets/assetdb/momr-december-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-11-01,2025-10-01,https://www.opec.org/assets/assetdb/momr-appendix-nov-2025.xlsx,https://www.opec.org/assets/assetdb/momr-november-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-10-01,2025-09-01,https://www.opec.org/assets/assetdb/momr-appendix-oct-2025.xlsx,,missing,12,61,inactive,Official PDF URL blocked; needs alternate PDF source before activation
+2025-09-01,2025-08-01,https://www.opec.org/assets/assetdb/momr-appendix-september-2025.xlsx,https://www.opec.org/assets/assetdb/momr-september-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-08-01,2025-07-01,https://www.opec.org/assets/assetdb/momr-appendix-august-2025.xlsx,https://www.opec.org/assets/assetdb/momr-august-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-07-01,2025-06-01,https://www.opec.org/assets/assetdb/momr-appendix-july-2025.xlsx,https://www.opec.org/assets/assetdb/momr-july-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-06-01,2025-05-01,https://www.opec.org/assets/assetdb/momr-appendix-june-2025.xlsx,https://www.opec.org/assets/assetdb/momr-june-2025.pdf,official,12,61,active,Official PDF and appendix
+2025-05-01,2025-04-01,https://www.opec.org/assets/assetdb/momr-appendix-may-2025.xlsx,https://www.opec.org/assets/assetdb/momr-may-2025.pdf,official,12,61,active,Official PDF and appendix

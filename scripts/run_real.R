@@ -1,0 +1,10 @@
+source("R/source_helpers.R")
+
+run_script_isolated("scripts/real_01_gdp_a_a_bcv.R")
+run_script_isolated("scripts/real_02_gdp_a_s_bcv.R")
+run_script_isolated("scripts/real_03_gdp_q_a_bcv.R")
+run_script_isolated("scripts/real_04_gdp_q_s_bcv.R")
+run_script_isolated("scripts/real_05_gdp_imf.R")
+run_script_isolated("scripts/real_06_gdp_wb.R")
+run_script_isolated("scripts/real_07_gdppc_wb.R")
+run_script_isolated("scripts/real_08_incpc_wb.R")

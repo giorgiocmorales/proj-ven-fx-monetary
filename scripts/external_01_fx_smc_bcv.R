@@ -7,15 +7,16 @@ library(lubridate)
 library(openxlsx)
 library(glue)
 
+source("R/source_helpers.R")
+
 # Clean up ----
 rm(list = ls())
 
 # Helper functions ------
 
 # Ensure required folders exist
-dir.create("data/raw", recursive = TRUE, showWarnings = FALSE)
-dir.create("data/manual_fix", recursive = TRUE, showWarnings = FALSE)
-dir.create("data/interim", recursive = TRUE, showWarnings = FALSE)
+source("R/source_helpers.R")
+ensure_project_dirs()
 
 # Normalize text to reduce encoding/accent fragility in pattern matching
 normalize_text <- function(x) {
@@ -61,8 +62,8 @@ download_bcv_file <- function(url, max_attempts = 3) {
   stop(glue("Download failed after {max_attempts} attempts: {basename(url)}"))
 }
 
-# Extract USD row from a single sheet
-extract_usd_from_sheet <- function(sheet, file_path) {
+# Extract currency rows from a single sheet
+extract_fx_from_sheet <- function(sheet, file_path, currencies = c("USD", "EUR")) {
   df <- read_excel(file_path, sheet = sheet, col_names = FALSE)
   if (ncol(df) < 6) return(NULL)
 
@@ -83,28 +84,32 @@ extract_usd_from_sheet <- function(sheet, file_path) {
 
   if (is.na(fecha_operacion) || is.na(fecha_valor)) return(NULL)
 
-  usd_row <- which(str_to_upper(trimws(as.character(df$`...1`))) == "USD")
-  if (length(usd_row) == 0) return(NULL)
+  currency_rows <- which(str_to_upper(trimws(as.character(df$`...1`))) %in% currencies)
+  if (length(currency_rows) == 0) return(NULL)
 
-  bid <- suppressWarnings(as.numeric(df$`...5`[usd_row[1]]))
-  ask <- suppressWarnings(as.numeric(df$`...6`[usd_row[1]]))
+  result <- map_dfr(currency_rows, function(row_id) {
+    bid <- suppressWarnings(as.numeric(df$`...5`[row_id]))
+    ask <- suppressWarnings(as.numeric(df$`...6`[row_id]))
 
-  if (is.na(bid) || is.na(ask)) return(NULL)
+    if (is.na(bid) || is.na(ask)) return(NULL)
 
-  tibble(
-    sheet_id = sheet,
-    currency = "USD",
-    fecha_operacion = fecha_operacion,
-    fecha_valor = fecha_valor,
-    usd_bid = bid,
-    usd_ask = ask
-  )
+    tibble(
+      sheet_id = sheet,
+      currency = str_to_upper(trimws(as.character(df$`...1`[row_id]))),
+      fecha_operacion = fecha_operacion,
+      fecha_valor = fecha_valor,
+      bid = bid,
+      ask = ask
+    )
+  })
+
+  result
 }
 
 # Extract all sheets
-extract_usd_from_file <- function(file_path) {
+extract_fx_from_file <- function(file_path) {
   sheets <- excel_sheets(file_path)
-  map_dfr(sheets, extract_usd_from_sheet, file_path = file_path)
+  map_dfr(sheets, extract_fx_from_sheet, file_path = file_path)
 }
 
 # Process one BCV file: download -> extract -> delete
@@ -122,7 +127,7 @@ process_bcv_file <- function(url, database_id) {
   if (is.null(file_path)) return(NULL)
 
   result <- tryCatch(
-    extract_usd_from_file(file_path),
+    extract_fx_from_file(file_path),
     error = function(e) {
       message(glue("XLS parse failed: {basename(file_path)} - check manually"))
       file.copy(file_path, file.path("data/manual_fix", basename(file_path)), overwrite = TRUE)
@@ -167,7 +172,9 @@ bcv_files <- tribble(
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b25_smc.xls", "2025Q2",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c25_smc.xls", "2025Q3",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2d25_smc.xls", "2025Q4",
-  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls", "2026Q1"
+  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls", "2026Q1",
+  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b26_smc.xls", "2026Q2"
+  
 )
 
 # Initialize result
@@ -176,9 +183,9 @@ ves_fx_bcv <- tibble()
 # Loop over all files
 for (i in seq_len(nrow(bcv_files))) {
   message(glue("Processing {bcv_files$database_id[i]}"))
-  usd_data <- process_bcv_file(bcv_files$url[i], bcv_files$database_id[i])
-  if (!is.null(usd_data) && nrow(usd_data) > 0) {
-    ves_fx_bcv <- bind_rows(ves_fx_bcv, usd_data)
+  fx_data <- process_bcv_file(bcv_files$url[i], bcv_files$database_id[i])
+  if (!is.null(fx_data) && nrow(fx_data) > 0) {
+    ves_fx_bcv <- bind_rows(ves_fx_bcv, fx_data)
   }
 }
 
@@ -187,7 +194,7 @@ for (i in seq_len(nrow(bcv_files))) {
 # Helper function
 process_fixed_file <- function(filepath, database_id) {
   sheets <- excel_sheets(filepath)
-  df <- map_dfr(sheets, extract_usd_from_sheet, file_path = filepath)
+  df <- map_dfr(sheets, extract_fx_from_sheet, file_path = filepath)
   if (!is.null(df) && nrow(df) > 0) {
     df$database_id <- database_id
   }
@@ -211,53 +218,53 @@ for (i in seq_len(nrow(manual_fix_files))) {
     message(glue("Manual fix file missing: {fp} - skipping"))
     next
   }
-  usd_data <- process_fixed_file(fp, db)
-  if (!is.null(usd_data) && nrow(usd_data) > 0) {
-    ves_fx_bcv <- bind_rows(ves_fx_bcv, usd_data)
+  fx_data <- process_fixed_file(fp, db)
+  if (!is.null(fx_data) && nrow(fx_data) > 0) {
+    ves_fx_bcv <- bind_rows(ves_fx_bcv, fx_data)
   }
 }
 
 # Arrange
 ves_fx_bcv <- ves_fx_bcv %>%
-  distinct(fecha_valor, database_id, .keep_all = TRUE) %>%
-  arrange(fecha_valor)
+  distinct(fecha_valor, currency, database_id, .keep_all = TRUE) %>%
+  arrange(fecha_valor, currency)
 
 # Check databases order
 unique(ves_fx_bcv$database_id) %>% sort()
 
 # Save file
-write_csv(ves_fx_bcv, "data/interim/ves_usd_fx_smc.csv")
+write_csv(ves_fx_bcv, "data/processed/external_01_fx_smc_bcv.csv")
 
 # Update current (incomplete) quarter -------------
 
 # Load csv
-ves_fx_bcv <- read_csv("data/interim/ves_usd_fx_smc.csv", show_col_types = FALSE)
+ves_fx_bcv <- read_csv("data/processed/external_01_fx_smc_bcv.csv", show_col_types = FALSE)
 
-url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls"
-database_id <- "2026Q1"
+url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b26_smc.xls"
+database_id <- "2026Q2"
 
 # Process fresh data
-usd_data <- process_bcv_file(url, database_id)
+fx_data <- process_bcv_file(url, database_id)
 
 # Overwrite current quarter only if fresh pull succeeded
-if (!is.null(usd_data) && nrow(usd_data) > 0) {
+if (!is.null(fx_data) && nrow(fx_data) > 0) {
   ves_fx_bcv <- ves_fx_bcv %>%
     filter(database_id != !!database_id) %>%
-    bind_rows(usd_data) %>%
-    arrange(fecha_valor)
+    bind_rows(fx_data) %>%
+    arrange(fecha_valor, currency)
 } else {
   message(glue("Refresh skipped for {database_id}: keeping previous data"))
 }
 
 # Check no repeats -----------
-length(unique(ves_fx_bcv$fecha_valor)) == length(ves_fx_bcv$fecha_valor)
+nrow(distinct(ves_fx_bcv, fecha_valor, currency)) == nrow(ves_fx_bcv)
 
 # Save -------------
-write_csv(ves_fx_bcv, "data/interim/ves_usd_fx_smc.csv")
+write_csv(ves_fx_bcv, "data/processed/external_01_fx_smc_bcv.csv")
 
 # Clean Up -------
 rm(
-  usd_data, ves_fx_bcv, database_id, url, bcv_files, manual_fix_files,
-  download_bcv_file, extract_usd_from_file, extract_usd_from_sheet,
+  fx_data, ves_fx_bcv, database_id, url, bcv_files, manual_fix_files,
+  download_bcv_file, extract_fx_from_file, extract_fx_from_sheet,
   process_bcv_file, process_fixed_file, normalize_text, extract_date_from_text
 )
