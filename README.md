@@ -29,6 +29,12 @@ R-first repository for collecting Venezuelan macroeconomic data from official an
 
 ## Runners
 
+- Install R dependencies on a fresh machine with:
+
+```r
+source("scripts/install_dependencies.R")
+```
+
 - `scripts/run_prices.R`
 - `scripts/run_monetary.R`
 - `scripts/run_oil.R`

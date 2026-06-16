@@ -1,0 +1,34 @@
+Package: proj-ven-econ
+Title: Venezuela Economy Data Pipeline
+Version: 0.0.0.9000
+Description: R scripts for collecting Venezuelan macroeconomic source extracts and derived reporting inputs.
+License: MIT
+Encoding: UTF-8
+Depends:
+    R (>= 4.2)
+Imports:
+    dplyr,
+    egg,
+    ggplot2,
+    glue,
+    grid,
+    here,
+    httr,
+    httr2,
+    jsonlite,
+    lubridate,
+    openxlsx,
+    pdftools,
+    purrr,
+    ragg,
+    readr,
+    readxl,
+    rsdmx,
+    rvest,
+    scales,
+    slider,
+    stringr,
+    tibble,
+    tidyr,
+    tidyverse,
+    xml2
