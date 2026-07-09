@@ -173,7 +173,8 @@ bcv_files <- tribble(
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c25_smc.xls", "2025Q3",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2d25_smc.xls", "2025Q4",
   "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2a26_smc.xls", "2026Q1",
-  "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b26_smc.xls", "2026Q2"
+  "https://bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b26_smc.xls", "2026Q2",
+  "https://bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c26_smc.xls", "2026Q3"
   
 )
 
@@ -240,8 +241,8 @@ write_csv(ves_fx_bcv, "data/processed/external_01_fx_smc_bcv.csv")
 # Load csv
 ves_fx_bcv <- read_csv("data/processed/external_01_fx_smc_bcv.csv", show_col_types = FALSE)
 
-url <- "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2b26_smc.xls"
-database_id <- "2026Q2"
+url <- "https://bcv.org.ve/sites/default/files/EstadisticasGeneral/2_1_2c26_smc.xls"
+database_id <- "2026Q3"
 
 # Process fresh data
 fx_data <- process_bcv_file(url, database_id)
