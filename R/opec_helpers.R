@@ -14,7 +14,7 @@ opec_raw_dir <- function(report_month) {
   file.path("data", "raw", "opec", opec_report_slug(report_month))
 }
 
-opec_download_report <- function(report) {
+opec_download_report <- function(report, download_appendix = FALSE) {
   report_month <- as.Date(report$report_month[[1]])
   raw_dir <- opec_raw_dir(report_month)
   dir.create(raw_dir, recursive = TRUE, showWarnings = FALSE)
@@ -22,8 +22,17 @@ opec_download_report <- function(report) {
   appendix_path <- file.path(raw_dir, "appendix.xlsx")
   pdf_path <- file.path(raw_dir, "momr.pdf")
 
-  if (!is.na(report$appendix_url[[1]]) && nzchar(report$appendix_url[[1]])) {
-    download_latest_file(report$appendix_url[[1]], appendix_path)
+  if (download_appendix && !is.na(report$appendix_url[[1]]) && nzchar(report$appendix_url[[1]])) {
+    # The production and price extractors consume the PDF only. Some archive
+    # reports do not expose a matching appendix, so do not block a valid PDF
+    # extraction when its optional appendix download fails.
+    tryCatch(
+      download_latest_file(report$appendix_url[[1]], appendix_path),
+      error = function(e) {
+        message(sprintf("Optional OPEC appendix unavailable: %s", report$appendix_url[[1]]))
+        NULL
+      }
+    )
   }
 
   if (!is.na(report$pdf_url[[1]]) && nzchar(report$pdf_url[[1]])) {
@@ -93,7 +102,7 @@ opec_period_type <- function(period) {
   )
 }
 
-extract_opec_venezuela_line <- function(text, source_type) {
+extract_opec_venezuela_line <- function(text, source_type, observation_month = NULL) {
   pattern <- "Venezuela\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+([0-9,.]+|\\.\\.)\\s+(-?[0-9,.]+|\\.\\.)"
   matches <- stringr::str_match_all(text, pattern)[[1]]
 
@@ -102,7 +111,14 @@ extract_opec_venezuela_line <- function(text, source_type) {
   }
 
   values <- matches[ifelse(source_type == "secondary_sources", 1L, nrow(matches)), 2:10]
-  periods <- c("2024", "2025", "q_minus_2", "q_minus_1", "q_current", "m_minus_2", "m_minus_1", "m_current", "mom_change")
+  annual_periods <- if (is.null(observation_month)) {
+    c("2024", "2025")
+  } else {
+    report_year <- as.integer(format(as.Date(observation_month), "%Y"))
+    as.character(c(report_year - 2L, report_year - 1L))
+  }
+
+  periods <- c(annual_periods, "q_minus_2", "q_minus_1", "q_current", "m_minus_2", "m_minus_1", "m_current", "mom_change")
 
   tibble::tibble(period = periods, value = parse_opec_number(values)) |>
     dplyr::mutate(

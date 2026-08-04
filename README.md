@@ -46,6 +46,7 @@ source("scripts/install_dependencies.R")
 ## Metadata Catalogs
 
 - `scripts/catalog_imf_wb.R`: refreshes World Bank indicator metadata and IMF dataflow, dimension, and code catalogs into `registry/`.
+- `scripts/catalog_opec_momr.R`: adds OPEC MOMR archive candidates from 2001 onward. Candidates are not activated until their table layout is validated.
 
 ## Notes
 
