@@ -25,14 +25,26 @@ results <- purrr::pmap(reports, function(...) {
       pdf_text <- pdftools::pdf_text(paths$pdf_path)
       production_page <- find_opec_pdf_page(
         pdf_text,
-        patterns = c("DoC crude oil production.*Venezuela", "Table 5 - 7: DoC crude oil production.*Venezuela"),
+        patterns = c(
+          "DoC crude oil production.*Venezuela",
+          "Table 5 - 7: DoC crude oil production.*Venezuela",
+          "OPEC crude oil production.*Venezuela"
+        ),
         fallback_page = report$page_production[[1]]
       )
       report_page <- pdf_text[production_page]
 
       data <- bind_rows(
-        extract_opec_venezuela_line(report_page, "secondary_sources"),
-        extract_opec_venezuela_line(report_page, "direct_communication")
+        extract_opec_venezuela_line(
+          report_page,
+          "secondary_sources",
+          observation_month = report$observation_month[[1]]
+        ),
+        extract_opec_venezuela_line(
+          report_page,
+          "direct_communication",
+          observation_month = report$observation_month[[1]]
+        )
       ) %>%
         group_by(source_type) %>%
         mutate(
